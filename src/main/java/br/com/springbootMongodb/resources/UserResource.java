@@ -1,15 +1,20 @@
 package br.com.springbootMongodb.resources;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.servlet.Servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.springbootMongodb.domain.User;
 import br.com.springbootMongodb.dto.UserDTO;
@@ -38,4 +43,14 @@ public class UserResource implements Serializable{
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(new UserDTO(obj));
 	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@RequestBody UserDTO useDto){
+		User obj = service.fromDTO(useDto);
+		obj  = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+	}
+	
+	
 }
