@@ -58,4 +58,13 @@ public class UserResource implements Serializable{
 		return ResponseEntity.noContent().build();
 	}
 	
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody UserDTO useDto, @PathVariable String id){
+		User obj = service.fromDTO(useDto);
+		obj.setId(id);
+		obj  = service.update(obj);
+		return ResponseEntity.noContent().build();
+	}
+	
+	
 }
